@@ -1,9 +1,15 @@
 package com.comeon.algafood.api.controller;
 
+import static com.comeon.algafood.infrastructure.repository.spec.RestauranteSpecs.comFreteGratis;
+import static com.comeon.algafood.infrastructure.repository.spec.RestauranteSpecs.contemNome;
+
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +35,9 @@ import com.comeon.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.comeon.algafood.domain.model.Restaurante;
 import com.comeon.algafood.domain.repository.RestauranteRepository;
 import com.comeon.algafood.domain.service.CadastroRestauranteService;
+import com.comeon.algafood.infrastructure.repository.spec.RestauranteComFreteGratisSpec;
+import com.comeon.algafood.infrastructure.repository.spec.RestauranteContemNomeSpec;
+import com.comeon.algafood.infrastructure.repository.spec.RestauranteSpecs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
@@ -90,6 +99,30 @@ public class RestauranteController {
 
 		}
 
+	}
+	
+	@GetMapping("/por-nome-e-frete")
+	public List<Restaurante> restaurantesPorNomeEFrete(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal){
+		
+		//return restauranteRepository.find(nome, taxaInicial, taxaFinal);
+				
+		return restauranteRepository.buscar(nome, taxaInicial, taxaFinal);
+	}
+	
+	@GetMapping("/por-nome-e-frete-spec")
+	public List<Restaurante> buscarPorNomeEFreteGratis(String nome){
+		
+	
+		return restauranteRepository.findAll(
+					 comFreteGratis().and(contemNome(nome)));
+	}
+	
+	@GetMapping("/por-nome-e-frete-spec-impl")
+	public List<Restaurante> findFreteGratis(String nome){
+		
+	
+		return restauranteRepository.findAll(
+					 comFreteGratis().and(contemNome(nome)));
 	}
 
 	@DeleteMapping("/{id}")
